@@ -1,0 +1,15 @@
+shop: "Связной"
+categories:
+  - id: 1
+    name: "Смартфоны"
+goods:
+  - id: 123
+    category: 1
+    model: "iPhone 15"
+    name: "Смартфон Apple iPhone 15 128Gb"
+    price: 90000
+    price_rrc: 95000
+    quantity: 10
+    parameters:
+      "Цвет": "Black"
+      "Память": "128Gb"
