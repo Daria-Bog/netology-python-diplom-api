@@ -72,15 +72,15 @@
 
 ## Как запустить проект
 
-1. **Клонировать репозиторий**:
+### 1. **Клонировать репозиторий**:
 ```bash
 git clone https://github.com/Daria-Bog/netology-python-diplom-api.git
 ```
-### 2. Установить зависимости:
+### 2. **Установить зависимости**:
 ```bash
 pip install -r requirements.txt
 ```
-### 3. Запустить сервер:
+### 3. **Запустить сервер**:
 ```bash
 python manage.py runserver
 ```
