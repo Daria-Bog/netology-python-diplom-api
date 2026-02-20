@@ -63,17 +63,22 @@ class User(AbstractUser):
     objects = UserManager()
     USERNAME_FIELD = 'email'
 
+    # Добавляем эту строку, чтобы сбросить стандартное поле username из AbstractUser
+    username = None
+
     email = models.EmailField(_('email address'), unique=True)
     company = models.CharField(verbose_name='Компания', max_length=40, blank=True)
     position = models.CharField(verbose_name='Должность', max_length=40, blank=True)
     type = models.CharField(verbose_name='Тип пользователя', choices=USER_TYPE_CHOICES, max_length=5, default='buyer')
 
-    username_validator = UnicodeUsernameValidator()
+    # Теперь кастомное поле username, которое может быть пустым (null=True)
     username = models.CharField(
         _('username'),
         max_length=150,
-        validators=[username_validator],
-        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        # unique=True,
+        blank=True,
+        null=True,
+        help_text=_('150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
     )
 
     is_active = models.BooleanField(
