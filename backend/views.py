@@ -14,8 +14,13 @@ from django.db.models import Sum, F
 from backend.serializers import OrderSerializer, OrderItemSerializer
 from backend.serializers import ContactSerializer
 from backend.signals import new_order_signal
+from rest_framework.throttling import AnonRateThrottle
 
 class ContactView(APIView):
+    """
+    Управление контактами пользователя (адреса доставки и телефоны).
+    Поддерживает просмотр, добавление, удаление и редактирование.
+    """
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
@@ -34,6 +39,10 @@ class ContactView(APIView):
         return Response(serializer.data)
 
 class BasketView(APIView):
+    """
+    Класс для управления корзиной пользователя.
+    Позволяет просматривать, добавлять, удалять и изменять количество товаров.
+    """
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
@@ -90,8 +99,10 @@ class BasketView(APIView):
 
 class RegisterAccount(APIView):
     """
-    Для регистрации покупателей
+    Регистрация новых покупателей.
+    Принимает email, пароль и данные пользователя, отправляет токен подтверждения.
     """
+    throttle_classes = [AnonRateThrottle]  # Ограничит частоту регистраций для анонимов
 
     def post(self, request, *args, **kwargs):
         # Проверяем обязательные аргументы
@@ -102,8 +113,12 @@ class RegisterAccount(APIView):
             except Exception as password_error:
                 return JsonResponse({'Status': False, 'Errors': {'password': str(password_error)}})
 
-            # Проверяем уникальность email
-            user_serializer = UserSerializer(data=request.data)
+            data = request.data.copy()
+            if 'email' in data and 'username' not in data:
+                data['username'] = data['email']
+
+            user_serializer = UserSerializer(data=data)
+
             if user_serializer.is_valid():
                 # Сохраняем пользователя
                 user = user_serializer.save()
