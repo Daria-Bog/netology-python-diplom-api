@@ -15,6 +15,7 @@ from backend.serializers import OrderSerializer, OrderItemSerializer
 from backend.serializers import ContactSerializer
 from backend.signals import new_order_signal
 from rest_framework.throttling import AnonRateThrottle
+from backend.tasks import send_email_task
 
 class ContactView(APIView):
     """
@@ -128,8 +129,11 @@ class RegisterAccount(APIView):
                 # Создаем токен подтверждения
                 token, _ = ConfirmEmailToken.objects.get_or_create(user=user)
 
-                # Имитация отправки письма (токен выведется в консоль)
-                print(f"Token for {user.email}: {token.key}")
+                send_email_task.delay(
+                    subject=f"Password Reset Token for {user.email}",
+                    message=token.key,
+                    to_email=user.email
+                )
 
                 return JsonResponse(
                     {'Status': True, 'Message': 'Пользователь зарегистрирован. Токен отправлен на почту.'})
