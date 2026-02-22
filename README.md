@@ -84,6 +84,10 @@ pip install -r requirements.txt
 ```bash
 python manage.py runserver
 ```
+### 4. Запустить Celery (в отдельном терминале):
+```bash
+celery -A netology_pd_diplom worker -l info -P eventlet
+```
 
 ## Примечание
 
